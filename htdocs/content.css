@@ -155,11 +155,6 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 #content .toc h2 { font-size: 14px; }
 #content .toc ul { margin: 2px; padding:0; list-style-type: none; }
 
-/* Comments and Trackbacks */
-#content ol.feedback { list-style-type: none; margin: 0; padding: 0;}
-
-#content .feedbackitem { border: 2pt solid #ddd; margin: 0 0 0.5em; padding: 1em; }
-
 /*--------------------------------------------------------------
  Sidebar
  --------------------------------------------------------------*/
