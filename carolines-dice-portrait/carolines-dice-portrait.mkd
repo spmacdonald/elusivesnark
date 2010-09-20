@@ -1,0 +1,22 @@
+Featured
+Caroline's Dice Portrait
+2008-11-16
+Recently, I have been learning about the fundamentals of computer graphics.  The reason behind this effort is that I feel one of the most important skills that a scientist can possess is the ability to communicate complex ideas through illustration.  To this end, I have focused on learning two complementary pieces of technology
+portrait-thumb.png
+
+Recently, I have been learning about the fundamentals of computer graphics.  The reason behind this effort is that I feel one of the most important skills that a scientist can possess is the ability to communicate complex ideas through illustration.  To this end, I have focused on learning two complementary pieces of technology: [Processing](http://processing.org).
+
+I find that the best way to learn about something new is to dive in with a project that I find interesting.  So, I decided to visualize what it would look like if I were to make a mosaic of Caroline using gaming dice.
+
+### Project description
+
+The goal of this project is to automatically convert an unaltered image to an image that is composed of black dice with white pips. A good starting place for our discussion is the composite image below. You can click on it to retrieve the full sized image.
+
+
+
+The method for producing the final visualization is essentially a special case of vector quantization. First, the original image is downscaled to a six step gray palette. Then each of the six shades of gray are assigned to a dice value: 1 corresponds to black while a value of 6 represents white. The source code for accomplishing this is given at the end of this post.
+
+### Physical Construction
+
+Having produced what appears to be a viable representation I decided that actually building this would make a pretty unique Christmas gift.  I found a place online that sells dice by the pound and ordered 3000 of them.  I decided to go with 16 mm dice.  The dimensions of the finished portrait are, 64 x 102.4 cm or in dice units, 40 x 64 dice, for a total of 2560 dice.  Note that the ratio of height/width is 1.6 by construction, or approximately equal to the. I have included some photos below of the construction process.
+
