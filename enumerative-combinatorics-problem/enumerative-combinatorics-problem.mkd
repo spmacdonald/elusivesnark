@@ -2,6 +2,20 @@ Featured
 An Enumerative Combinatorics Problem
 2008-11-02
 This post is about a problem I have been working on in my spare time for the past few months. One of my favorite aspects of this problem is that it can be stated in a straightforward way and still yields some pretty interesting, complex behavior. I initially started working on this as a way to learn more about the python programming language, but the real meat here lies in the combinatorial proofs which I am still trying to work out.
-combinatorics-thumb.png
 
-Blah blah
+    PImage img;
+    PImage cropped_img;
+    PImage patch;
+
+    int _width = 640;
+    int _height = 1024;
+    int patch_w = 16;
+    int patch_h = 16;
+    int pip_size = 4;
+
+    void setup() {
+        size(_width, _height);
+        img = loadImage("Caroline.jpg");
+        img.resize(1536, 1024);
+        cropped_img = img.get(250, 0, _width, _height);
+    }

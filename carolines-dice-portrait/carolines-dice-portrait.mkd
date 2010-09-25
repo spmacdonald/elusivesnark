@@ -1,22 +1,173 @@
 Featured
 Caroline's Dice Portrait
 2008-11-16
-Recently, I have been learning about the fundamentals of computer graphics.  The reason behind this effort is that I feel one of the most important skills that a scientist can possess is the ability to communicate complex ideas through illustration.  To this end, I have focused on learning two complementary pieces of technology
-portrait-thumb.png
+I recently discovered the Processing open source programming environment for creating data visualizations.  I find that the best way to learn about something new is to dive in with an interesting project.  So, I decided to visualize what it would look like if I were to make a mosaic of Caroline using gaming dice.
 
-Recently, I have been learning about the fundamentals of computer graphics.  The reason behind this effort is that I feel one of the most important skills that a scientist can possess is the ability to communicate complex ideas through illustration.  To this end, I have focused on learning two complementary pieces of technology: [Processing](http://processing.org).
+The goal of this project is to automatically convert an unaltered image to an image that is composed of black dice with white pips. A good starting place for our discussion is the composite image below.
 
-I find that the best way to learn about something new is to dive in with a project that I find interesting.  So, I decided to visualize what it would look like if I were to make a mosaic of Caroline using gaming dice.
-
-### Project description
-
-The goal of this project is to automatically convert an unaltered image to an image that is composed of black dice with white pips. A good starting place for our discussion is the composite image below. You can click on it to retrieve the full sized image.
-
-
+![Caroline](/images/carolines-dice-portrait/portrait-small.png)
+[Full size](/images/carolines-dice-portrait/portrait.png)
 
 The method for producing the final visualization is essentially a special case of vector quantization. First, the original image is downscaled to a six step gray palette. Then each of the six shades of gray are assigned to a dice value: 1 corresponds to black while a value of 6 represents white. The source code for accomplishing this is given at the end of this post.
 
 ### Physical Construction
 
-Having produced what appears to be a viable representation I decided that actually building this would make a pretty unique Christmas gift.  I found a place online that sells dice by the pound and ordered 3000 of them.  I decided to go with 16 mm dice.  The dimensions of the finished portrait are, 64 x 102.4 cm or in dice units, 40 x 64 dice, for a total of 2560 dice.  Note that the ratio of height/width is 1.6 by construction, or approximately equal to the. I have included some photos below of the construction process.
+Having produced what appears to be a viable representation I decided that actually building this would make a pretty unique Christmas gift.  I found a place online that sells dice by the pound and ordered 3000 of them.  I decided to go with 16 mm dice.  The dimensions of the finished portrait are, 64 x 102.4 cm or in dice units, 40 x 64 dice, for a total of 2560 dice.  Note that the ratio of height/width is 1.6 by construction, or approximately equal to the [golden ratio](http://en.wikipedia.org/wiki/Golden_ratio).  I have included some photos below of the construction process.
 
+![Unpackaged](/images/carolines-dice-portrait/unpackaged-dice-small.jpg)
+This is what 3000 dice look like. [Full size](/images/carolines-dice-portrait/unpackaged-dice.jpg)
+
+![Assembling](/images/carolines-dice-portrait/assembling-small.jpg)
+My assembly station.  It took about four hours to get to this point. [Full size](/images/carolines-dice-portrait/assembling.jpg)
+
+![Assembled](/images/carolines-dice-portrait/assembled-small.jpg)
+The completed portrait. [Full size](/images/carolines-dice-portrait/assembled.jpg)
+
+![Complete1](/images/carolines-dice-portrait/complete1-small.jpg)
+I had the frame built by a local welder. [Full size](/images/carolines-dice-portrait/complete1.jpg)
+
+![Complete2](/images/carolines-dice-portrait/complete2-small.jpg)
+One more shot of the end result. It weighs close to 100 pounds. [Full size](/images/carolines-dice-portrait/complete2.jpg)
+
+### Source Code
+
+    PImage img;
+    PImage cropped_img;
+    PImage patch;
+
+    int _width = 640;
+    int _height = 1024;
+    int patch_w = 16;
+    int patch_h = 16;
+    int pip_size = 4;
+
+    void setup() {
+        size(_width, _height);
+        img = loadImage("Caroline.jpg");
+        img.resize(1536, 1024);
+        cropped_img = img.get(250, 0, _width, _height);
+    }
+
+    // Draw quantized image
+    void draw() {
+
+        // Array to hold the gray values of a patch
+        int[] x = new int[patch_w * patch_h];
+
+        // Quantize the image
+        for (int i=0; i < (_width/patch_w); ++i) {
+            for (int j=0; j < (_height/patch_h); ++j) {
+                patch = cropped_img.get(i*patch_w, 
+                                        j*patch_h, 
+                                        patch_w, 
+                                        patch_h);
+                patch.loadPixels();
+                for (int k=0; k < patch.pixels.length; ++k) {
+                    x[k] = rgb2gray(patch.pixels[k]);
+                }
+
+                int dice_num = six_step_gray(mean(x));
+                if (dice_num == 1) draw_one(i, j);
+                if (dice_num == 2) draw_two(i, j);
+                if (dice_num == 3) draw_three(i, j);
+                if (dice_num == 4) draw_four(i, j);
+                if (dice_num == 5) draw_five(i, j);
+                if (dice_num == 6) draw_six(i, j);      
+            }
+        }  
+    }
+
+    void draw_one(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+8, j*patch_h+8, pip_size, pip_size);
+    }
+
+    void draw_two(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+3, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+13, pip_size, pip_size);
+    }
+
+    void draw_three(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+3, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+8, j*patch_h+8, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+13, pip_size, pip_size);
+    }
+
+    void draw_four(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+3, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+3, j*patch_h+13, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+13, pip_size, pip_size);  
+    }
+
+    void draw_five(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+3, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+3, j*patch_h+13, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+13, pip_size, pip_size);
+        ellipse(i*patch_w+8, j*patch_h+8, pip_size, pip_size);
+    }
+
+    void draw_six(int i, int j) {
+        fill(0);
+        rect(i*patch_w, j*patch_h, 16, 16);
+        fill(255);
+        ellipse(i*patch_w+3, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+3, j*patch_h+8, pip_size, pip_size);
+        ellipse(i*patch_w+3, j*patch_h+13, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+3, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+8, pip_size, pip_size);
+        ellipse(i*patch_w+13, j*patch_h+13, pip_size, pip_size);
+    }  
+
+    // Impose 6 step gray palette
+    int six_step_gray(int x) {
+        if (0 <= x && x <= 41)
+            return 1;
+        if (41 < x && x <= 83)
+            return 2;
+        if (83 < x && x <= 124)
+            return 3;
+        if (124 < x && x <= 165)
+            return 4;
+        if (165 < x && x <= 206)
+            return 5;
+        if (x < 206 && x <= 247)
+            return 6;
+        else
+            return 6;
+    }
+
+    // Blend rgb channels
+    int rgb2gray(int argb) { 
+        int _alpha = (argb >> 24) & 0xFF;
+        int _red = (argb >> 16) & 0xFF;
+        int _green = (argb >> 8 ) & 0xFF;
+        int _blue = (argb) & 0xFF;
+
+        return int(0.3*_red + 0.59*_green + 0.11*_blue);
+    }
+        
+    // Calculates the average of an integer array
+    int mean(int[] x) {
+        float m = 0;
+        for (int i=0; i < x.length; ++i) {
+            m += x[i];
+        }
+        m = m/x.length;  
+        return int(m);
+    }
