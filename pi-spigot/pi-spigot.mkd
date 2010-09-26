@@ -1,0 +1,104 @@
+Featured
+The Pi Spigot
+2009-08-28
+This post is about an image I created to visualize the digits of pi. The idea is to create a square grid, like a chess board, but inside each of the squares is a circle, the radius of which is determined by the digits of pi.
+
+^^^ This entry has a [github](http://github.com/spmacdonald/pi_spigot) page ^^^
+
+This post is about an image I created to visualize the digits of pi. The idea is to create a square grid, like a chess board, but inside each of the squares is a circle, the radius of which is determined by the digits of pi. As you can see in the 10 x 10 grid below, the digits of pi are given sequentially as you read down the columns.
+
+
+    3 5 6 9 1 0 4 4 9 5
+    1 8 2 5 6 5 5 0 8 3
+    4 9 6 0 9 8 9 6 6 4
+    1 7 4 2 3 2 2 2 2 2
+    5 9 3 8 9 0 3 8 8 1
+    9 3 3 8 9 9 0 6 0 1
+    2 2 8 4 3 7 7 2 3 7
+    6 3 3 1 7 4 8 0 4 0
+    5 8 2 9 5 9 1 8 8 6
+    3 4 7 7 1 4 6 9 2 7
+
+Using this construction, and some tricky color gradients I produced the following images.
+
+### 50 x 50 Grid
+![Grid50](/images/pi-spigot/grid-50-small.png)
+
+### 100 x 100 Grid
+![Grid100](/images/pi-spigot/grid-100-small.png)
+
+### Source code
+Note that in the source code below, the images produced use a purple gradient.  I adjusted the colors in the above images so that it would fit in with the global color scheme.  The original images are here: [grid50](/images/pi-spigot/grid-50.png) and [grid100](/images/pi-spigot/grid-100.png).
+
+    colors = ximport("colors")
+
+
+    def pi_digits():
+        """
+        Generator for digits of pi
+
+        See:
+        http://web.comlab.ox.ac.uk/people/Jeremy.Gibbons/publications/spigot.pdf    
+        """
+
+        q,r,t,k,n,l = 1,0,1,1,3,3
+        while True:
+            if 4*q+r-t < n*t:
+                yield n
+                q,r,t,k,n,l = (10*q,10*(r-n*t),t,k,(10*(3*q+r))/t-10*n,l)
+            else:
+                q,r,t,k,n,l = (q*k,(2*q+r)*l,t*l,k+1,(q*(7*k+2)+r*l)/(t*l),l+2)
+
+
+    def get_grid_index(pi_grid, i, j):
+
+        try:
+            up = pi_grid[i-1][j]
+            down = pi_grid[i+1][j]
+            left = pi_grid[i][j-1]
+            right = pi_grid[i][j+1]    
+        except IndexError:
+            up = pi_grid[i-1][j]
+            down = pi_grid[i][j]
+            left = pi_grid[i][j-1]
+            right = pi_grid[i][j]        
+        return up + 10*down + 100*left + 1000*right
+
+    # Begin drawing
+    rows = 50
+    cols = 50
+
+    # Initialize an empty matrix
+    pi_grid = []
+    for i in range(cols):
+        pi_grid.append([0]*rows)
+
+    # Fill the matrix with the digits of pi
+    digits = pi_digits()
+    for i in range(cols):
+        for j in range(rows):
+            pi_grid[i][j] = digits.next()
+
+    # Canvas size
+    size(50*25, 50*25)
+
+    # Black lines
+    stroke(0)
+
+    # Scale and width parameters in pixels
+    s_px = 25
+    w_px = 25
+
+    # Color lists
+    circle_clrs = colors.gradient([color(0.15, 0.1, 0.7), color(1, 1, 1)], steps=10000, spread=0.15)
+    square_clrs = colors.gradient([color(1, 1, 1), color(0.15, 0.1, 0.7)], steps=10000, spread=0.15)
+
+    # Draw to the canvas
+    for i in range(cols):
+        for j in range(rows):
+            x = (i)*s_px
+            y = (j)*s_px        
+            d = pi_grid[i][j]*w_px/10        
+            idx = get_grid_index(pi_grid, i, j)
+            rect(x, y, w_px, w_px, fill=square_clrs[idx])
+            oval(x+(w_px/2. - d/2.), y+(w_px/2. - d/2.), d, d, fill=circle_clrs[idx])
