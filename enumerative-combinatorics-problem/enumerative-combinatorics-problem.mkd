@@ -49,11 +49,11 @@ A famous result from combinatorics on words is that every non-empty word can be 
 
 ![Formula1](/images/enumerative-combinatorics-problem/formula1.png)
 
-By Möbius inversion we obtain the formula,
+By [Möbius inversion](http://en.wikipedia.org/wiki/M%C3%B6bius_inversion_formula) we obtain the formula,
 
 ![Formula2](/images/enumerative-combinatorics-problem/formula2.png)
 
-Where mu is the [Möbius inversion formula](http://en.wikipedia.org/wiki/M%C3%B6bius_inversion_formula).
+Where mu is the [Möbius function](http://en.wikipedia.org/wiki/M%C3%B6bius_function).
 
 In our case, the total number of words that can be formed by the map is *2^n*, thus by the relation above we have:
 
