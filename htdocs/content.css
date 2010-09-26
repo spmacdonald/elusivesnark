@@ -41,6 +41,7 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 #content h5 { font-size: 18px; background: #ffd; margin: 1.2em 0 0.3em; border-bottom: 1px dotted #aaa; }
 
 #content .entry { clear:left; }
+#content .entry img { display: block;   margin-left: auto;   margin-right: auto; }
 #content .index { margin: 0 0 1.2em; }
 
 #content .entry_summary img { float:left; margin: 0 15px 0 0; padding: 5px; border: 2px #eee solid; }
