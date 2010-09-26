@@ -1,2 +1,6 @@
+*.aux
+*.log
+*.dvi
+*.ps
 *.swp
 .DS_Store

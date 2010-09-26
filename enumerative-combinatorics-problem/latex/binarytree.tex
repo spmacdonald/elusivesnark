@@ -1,0 +1,33 @@
+\documentclass{article}
+\pagestyle{empty}
+\usepackage{pstricks,pst-node,pst-tree}
+
+\begin{document}
+\noindent
+\psset{unit=0.4,treesep=1,levelsep=7ex,nodesep=5pt}
+
+\pstree{\TR{a}} {
+  \pstree{ \TR{ab}}{
+  	\pstree{ \TR{aba}}{
+	  \TR{abab}
+	  \TR{abac}
+      } 
+  	\pstree{ \TR{abc}}{
+	  \TR{abca}
+	  \TR{abcb}
+	 }
+   }
+ 
+ \pstree{ \TR{ac}}{
+  \pstree{ \TR{aca}}{
+   \TR{acab}
+   \TR{acac}
+   }
+   \pstree{ \TR{acb}}{
+    \TR{acba}
+    \TR{acbc}
+    }
+    }
+ }
+ 
+\end{document}  

@@ -1,21 +1,62 @@
 Featured
 An Enumerative Combinatorics Problem
 2008-11-02
-This post is about a problem I have been working on in my spare time for the past few months. One of my favorite aspects of this problem is that it can be stated in a straightforward way and still yields some pretty interesting, complex behavior. I initially started working on this as a way to learn more about the python programming language, but the real meat here lies in the combinatorial proofs which I am still trying to work out.
+During the summer of 2003, in my second year of university I was fortunate to do a summer NSERC research program. This post is about the problem that I worked on during those four months.
 
-    PImage img;
-    PImage cropped_img;
-    PImage patch;
+^^^ This entry has a [github](http://github.com/spmacdonald/kasner) page ^^^
 
-    int _width = 640;
-    int _height = 1024;
-    int patch_w = 16;
-    int patch_h = 16;
-    int pip_size = 4;
+One of my favorite aspects of this problem is that it can be stated in a straightforward way and still yields some interesting, complex behavior. The problem begins by considering a simple two dimensional geometric construction: an equilateral triangle circumscribing a unit circle. We then impose the following rules upon this construction:
 
-    void setup() {
-        size(_width, _height);
-        img = loadImage("Caroline.jpg");
-        img.resize(1536, 1024);
-        cropped_img = img.get(250, 0, _width, _height);
-    }
+1. Choose any point on the unit circle, except where the triangle is tangent to the circle. This point is the initial point.
+2. Draw a line between the initial point, and the triangle vertex which this point is closest to. Extend the line until it intersects the circle again.
+3. Set the new intersection point to be the initial point and repeat.
+
+The rules above define a two dimensional iterative map. The figure below provides an illustration of the application of these rules. If we choose the red point to be the initial point, then the next point is green, followed by blue and finally back to red.
+
+![ActionOfMap](/images/enumerative-combinatorics-problem/action-of-map.png)
+
+Notice that there is something quite special happening in the figure above: the path that I have drawn is an example of a periodic path. Or, in technical terms, if x is a point on the circle and G represents the action of the map then G^3(x) = x. This phenomenon leads us to the subject of this post: *write an algorithm which is able to discover all of the map's periodic paths of length N.*
+
+### Description of Algorithm
+
+My approach to this problem is to exploit the symmetries that the map inherits from the equilateral triangle. This group is typically called the [Dihedral Group D3](http://mathworld.wolfram.com/DihedralGroupD3.html) by mathematicians. If we examine the figure below, the fat end of the red wedge occupies an arc with a starting and ending angle of 0 and 60 degrees respectively. Careful consideration of the symmetry group of an equilateral triangle will allow us to conclude that if we can find all of the periodic paths which begin and end in this arc, we can use symmetry to discover remaining paths.
+
+![ActionOfAlgorithm](/images/enumerative-combinatorics-problem/action-of-algorithm.png)
+
+The algorithm I came up with works as follows. The heart of the algorithm is: given an arc of the circle, I ask the question, from which triangle vertex could this arc have come from? The answer is one of the two possible triangle vertices which are furthest away from the arc. Every time this question is asked, the algorithm branches. By repeatedly asking this question and keeping track of the results I can populate a data structure (a heap to be precise) which will contain enough information to allow all of the periodic paths to be discovered. A concrete example should help make this clear. In the figure above, suppose that the initial red wedge came from the bottom left triangle vertex, then the candidate blue range contains the only points which would have allowed this. Repeating this process shows that the candidate ranges reduce in size very rapidly. By repeatedly walking this path we can refine the size of the arc to whatever tolerance we desire. The figure below illustrates what the data structure I use to hold my results looks like, and the trail that is visualized above.
+
+![ActionOfFollow](/images/enumerative-combinatorics-problem/action-of-follow.png)
+
+One problem with the implementation outlined above is that it is extremely memory hungry.  The search space grows as 2^N and keeping a data structure that large in memory is impossible for even modestly sized N.  To circumvent this problem I started writing an implementation in C++ (see the generator.cc file on github).  The idea behind this was to generate the paths iteratively and check if each one was periodic.  I ended up abandoning this however because I was more interested in trying to find a formula that counts the periodic paths as I describe below.
+
+### Results
+
+This [PDF](/images/enumerative-combinatorics-problem/all-cycles.pdf) file pictorially illustrates the results of the algorithm. 
+
+Notice that to each path I have associated a word made from a 3 letter alphabet. This is achieved by labeling each triangle vertex with the letters *a*, *b*, *c* and then appending the letter to the string representing the path according to the order in which the path is walked. In the table below the empirical results of the algorithm are presented. The Length column represents the periodicity of the path. The R+M, R, and M columns are abbreviations for Rotational and Mirror Symmetry, Rotational Symmetry, and Mirror Symmetry respectively. Finally, the Total column enumerates the number of unique periodic paths of length *n*. You can visually verify these numbers by examining the pdf file above. One caveat applies: the algorithm will over-count paths of length *n* by including those paths of length *d* where *d* divides *n*. For example, a path of length 6 will include the 2 paths of length 3. In the table below I have accounted for this, and removed the over-counted paths.
+
+![Results](/images/enumerative-combinatorics-problem/results.png)
+
+### Sketch of Proof
+
+For quite some time now, I have been trying to prove that there exists a bijection between the periodic cycles of the iterative map and binary Lyndon words. A Lyndon word is an aperiodic necklace representative. A necklace representative is the lexicographically smallest string of an equivalence class of a *k*-ary string under rotation. The paragraphs below outline my approach to proving this.
+
+It is clear from the rules of the iterative map that two letters with the same value will never be adjacent to each other.  Furthermore, since each word is equivalent under cyclic rotation, we can without loss of generality set the initial letter to be equal to *a*.  It is thus possible to form a tree which contains all valid words under the action of the iterative map, as shown below.  Since this tree contains all of the possible words, the periodic words must be a subset.
+
+![BinaryTree](/images/enumerative-combinatorics-problem/binarytree.png)
+
+A famous result from combinatorics on words is that every non-empty word can be uniquely written as a power of a primitive word.  Given an alphabet of size *k* denote the number of classes of conjugates of primitive words of length *n* by psi_k(n).  Since the total number of words of length *n* over an alphabet of size *k* is *k^n*, we have the following relation:
+
+![Formula1](/images/enumerative-combinatorics-problem/formula1.png)
+
+By Möbius inversion we obtain the formula,
+
+![Formula2](/images/enumerative-combinatorics-problem/formula2.png)
+
+Where mu is the [Möbius inversion formula](http://en.wikipedia.org/wiki/M%C3%B6bius_inversion_formula).
+
+In our case, the total number of words that can be formed by the map is *2^n*, thus by the relation above we have:
+
+![Formula3](/images/enumerative-combinatorics-problem/formula3.png)
+
+The above formula is in exact agreement with the numbers in the total column in the results above! While I am aware that this does not constitute a proof, it is very strong empirical evidence that the periodic orbits of the iterative map are represented by primitive strings.  Maybe someday I will have the time to return to this problem and finish it properly.
