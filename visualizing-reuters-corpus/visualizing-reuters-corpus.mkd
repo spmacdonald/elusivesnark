@@ -1,0 +1,16 @@
+Regular
+Visualizing The Reuters Corpus
+2009-12-09
+This post is about my first attempt to visualize unstructured textual information in, what I hope to be, a statistically meaningful way.
+
+This post is about my first attempt to visualize unstructured textual information in, what I hope to be, a statistically meaningful way. The result is an illustration which is shown below. 
+
+![Reuters](/images/visualizing-reuters-corpus/reuters.png)
+[Full size](/images/visualizing-reuters-corpus/reutersradialvis.pdf)
+
+### Description
+The data for this project is a subset of the Reuters Corpus, called RCV1. The above image contains all of the news wire articles published on August 20th, 1996 by Reuters. The headlines for each news article are arranged radially along the circumference of a circle and grouped by country of origin. Each story is assigned a color depending on which country the article came from. In total, there are 44 distinct countries. In the image below you can see a zoomed section of the figure that should hopefully make the preceding explanation clear. 
+
+![ReutersZoomed](/images/visualizing-reuters-corpus/reuters-zoomed.png)
+
+Arcs are drawn between two news articles based on what codes they have in common. In the Reuters Corpus, each news wire article comes tagged with a set of industry, topic and region codes. When I constructed the image, I specified for arcs to be drawn between two stories only if they have more than 4 codes in common. The color of the arc joining two stories is based loosely on which codes the articles share. The interpretation of this figure reveals some interesting bits of information. First the number of stories from the United States and the United Kingdom dwarf all the other countries, no surprises there. What is interesting however, is the very strong connection between South Africa and Australia. If you examine the image, there is a very thick turquoise band which joins articles from these two countries. I think that this finding is tantalizing in the sense that it suggests possible future directions such projects could follow in an attempt to make something useful.
