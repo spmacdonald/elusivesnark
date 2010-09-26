@@ -1,6 +1,6 @@
 Regular
 Visualizing The Reuters Corpus
-2009-12-09
+2008-12-09
 This post is about my first attempt to visualize unstructured textual information in, what I hope to be, a statistically meaningful way.
 
 This post is about my first attempt to visualize unstructured textual information in, what I hope to be, a statistically meaningful way. The result is an illustration which is shown below. 

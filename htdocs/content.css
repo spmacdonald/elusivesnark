@@ -40,11 +40,11 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 #content h4 { font-size: 18px; margin: 1.2em 0 0.3em; border-bottom: 1px dotted #bbb; }
 #content h5 { font-size: 18px; background: #ffd; margin: 1.2em 0 0.3em; border-bottom: 1px dotted #aaa; }
 
-#content .entry { margin: 0 0 1.2em; }
+#content .entry { clear:left; }
 #content .index { margin: 0 0 1.2em; }
 
-#content .entry_summary img { min-height: 80px; float:left; margin: 0 15px 0 0; padding: 5px; border: 2px #eee solid; }
-#content .entry_summary p { min-height: 90px; text-align: justify; }
+#content .entry_summary img { float:left; margin: 0 15px 0 0; padding: 5px; border: 2px #eee solid; }
+#content .entry_summary p { text-align: justify; }
 
 #content ul,
 #content ol { margin: 1em; padding:0; }
@@ -103,7 +103,7 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 
 #content .entry .title {
     font-size: 24px;
-    line-height: 94%;
+    /* line-height: 94%; */
     letter-spacing: -1.5px; 
     margin: 0;
 }
