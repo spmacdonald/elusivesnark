@@ -1,0 +1,132 @@
+Regular
+A Python Wrapper for Reuters' Spotlight API
+2009-08-06
+The Reuters Spotlight service provides access to Reuters content through a RESTful API: clients submit a HTTP query to the service and the content is returned as an easily consumable object. The first task that someone might perform when building an application to leverage the Reuters framework is to create their own local copy of the Reuters' database. There are many ways one could approach this task. I will describe one approach below.
+
+The Reuters Spotlight service provides access to [Reuters](http://www.reuters.com/) content through a RESTful API: clients submit a HTTP query to the service and the content is returned as an easily consumable object. The first task that someone might perform when building an application to leverage the Reuters framework is to create their own local copy of the Reuters' database. There are many ways one could approach this task. I will describe one approach below. 
+
+There are essentially three steps to perform:
+
+1. Request the data.
+2. Parse the data.
+3. Store the data.
+
+I have chosen python as the language to automate requesting and transforming the data and CouchDB as the database to store the documents in. CouchDB is ideal for this application as it is a document-orientated database which stores data in the same format that Spotlight will return to us. This impedance match will save lots of parsing effort.
+
+### Source Code
+
+    """ 
+    This script submits queries to Reuters' Spotlight service, and persists the
+    results in CouchDB.  You must have a (free) API key from Reuters to use
+    their service.
+
+    It is assumed that CouchDB is running locally on the default port and that
+    a database called 'reuters_test' exists. 
+
+    Depends on:
+    couchdb-python: http://code.google.com/p/couchdb-python/
+
+    Further reading:
+    http://spotlight.reuters.com/   (spotlight)
+    http://couchdb.apache.org/      (couchdb)
+    """
+
+    import sys
+    import urllib
+    import simplejson
+    import couchdb
+
+    REUTERS_BASE = 'http://spotlight.reuters.com/api/feed'
+    REUTERS_ERROR_MSG = r'''<error code="1000" title="Error"></error>'''
+    APIKEY = 'YOUR API KEY'
+
+    # For more choices see http://spotlight.reuters.com/handbook/content-feeds
+    CHANNELS = ['topNews', 'newsOne', 'businessNews']
+
+
+    class ReutersError(Exception):
+        pass
+
+    def get_articles(content='channelarticles', 
+                     edition='us', 
+                     channel='topnews', 
+                     format='json',
+                     version='1.0',
+                     count=1,
+                     callback='x',
+                     **kwargs):
+        """ 
+        Submits a query to Reuter's spotlight API.
+
+        Returns the 'items' field of the parsed JSON object. 
+        """
+
+        kwargs.update({
+            'content': content,
+            'edition': edition,
+            'channel': channel,
+            'format': format,
+            'version': version,
+            'count': count,
+            'callback': callback,
+            'apikey': APIKEY
+        })    
+        url = REUTERS_BASE + '?' + urllib.urlencode(kwargs)
+
+        content = urllib.urlopen(url).read()    
+        if REUTERS_ERROR_MSG in content:
+            raise ReutersError(content)
+        else:
+            ucontent = unicode(content[2:len(content)-2], 'UTF-8')
+            ucontent = ucontent.replace('\\\'','\\\\\'')
+            result = simplejson.loads(ucontent)
+            return result['items']
+
+    def main():
+        """ 
+        Downloads news articles from Reuter's Spotlight API and stores them in
+        CouchDB.
+
+        The data admits a natural key as (`guid` + `published`). When inserting
+        articles, the procedure is to check if the document exists in the
+        database, insert it if it does not, otherwise create a new revision.
+
+        There is a potential race condition in the delay between db.get() and
+        db[doc_id]. 
+        """
+
+        # Get the articles from Spotlight
+        all_articles = []
+        try:
+            for channel in CHANNELS:
+                articles = get_articles(channel=channel)
+                if articles is None:
+                    continue
+                for article in articles:
+                    all_articles.append(article)
+        except ReutersError, e:
+            print>>sys.stderr, 'Error: ReutersError %s' % e
+
+        # Put the articles in CouchDB
+        try:
+            server = couchdb.Server('http://127.0.0.1:5984')
+            db = server['reuters_test']
+
+            for article in all_articles:
+                doc_id = article['guid'] + article['published']
+                doc = db.get(doc_id)
+                if doc is None:
+                    db[doc_id] = article
+                else:
+                    article['_rev'] = doc['_rev']
+                    db[doc_id] = article
+        except couchdb.client.ResourceNotFound, e:
+            print>>sys.stderr, 'Error: ResourceNotFound %s' % e
+        except couchdb.client.ResourceConflict, e:
+            print>>sys.stderr, 'Error: ResourceConflict %s' % e
+        except Exception, e:
+            print>>sys.stderr, 'Error: %s' % e
+
+    if __name__ == '__main__':
+        main()
+
