@@ -12,10 +12,10 @@
                #content pre { color: #000; background: #eee; }
                #content .comments { display:none; } }
 
-body {
-    background: url(/images/theme/background.gif) repeat-x left top;
-    font: normal 13px "lucida grande", verdana, arial, helvetica, sans-serif;
-}
+/* body { */
+    /* background: url(/images/theme/background.gif) repeat-x left top; */
+    /* font: normal 13px "lucida grande", verdana, arial, helvetica, sans-serif; */
+/* } */
 
 input,
 textarea { font: normal 12px "bitstream vera sans", verdana, sans-serif; }
@@ -24,5 +24,5 @@ abbr  { border: none; }
 cite  { font-style: normal; }
 a img { border: none; padding: 0; margin: 0; }
 
-a:link,  a:visited { color: #930; text-decoration: none; }
+a:link,  a:visited { color: navy; text-decoration: underline; }
 a:hover, a:active  { text-decoration: underline; }

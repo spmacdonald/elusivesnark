@@ -12,7 +12,10 @@
 .atv { color: #080; }
 .dec { color: #606; }
 
-/*pre.prettyprint { padding: 2px; border: 1px solid #888; background-color: #EEEEEE }*/
+pre.prettyprint { 
+    padding: 5px; 
+    border: 1px solid #888; 
+}
 
 @media print {
   .str { color: #060; }

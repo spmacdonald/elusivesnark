@@ -8,42 +8,39 @@
  *     #sidebar
  *   #footer
  */
+
 body {
-    text-align: center;
-    margin: 0; padding: 1em; 
+    background: #eee;
+    font-family: helvetica, arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 #container {
-    width: 840px;
+    width: 700px;
     text-align: left; 
-    margin: 0 auto; padding: 0;
+    margin: 3em auto 0 auto; 
+    padding: 10px;
 }
 
 #header {
+    background: black;
+    background: black -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0, #56585b), color-stop(.5, #262728), color-stop(1, black));
+    background: black -moz-linear-gradient(top, #56585b, #262728 50%, black);
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
     height: 90px; 
-    margin: 0 0 15px; padding: 0;
 }
 
 #page {}
 
-#content { width: 600px; }
-
-#sidebar { width: 200px; }
-
-#footer {
-    height: 40px; 
-    margin: 10px 0 0; padding: 10px 0 0;
-    clear:both; 
+#content { 
+    padding: 20px;
+    background: white;
+    margin-bottom: 3em;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0, .5);
+    -moz-box-shadow:    0 0 5px rgba(0,0,0, .5);
+    -box-shadow:        0 0 5px rgba(0,0,0, .5);
 }
-
-/* BEGIN: Right Sidebar */
-#sidebar {
-    float: right; text-align: left;
-    padding-left: 15px; 
-    border-left: 1px dotted #ddd; 
-}
-#content {
-    float: left;
-    padding-left: 5px; 
-}
-/* END: Right Sidebar */

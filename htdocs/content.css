@@ -1,25 +1,54 @@
-/* Class styles */
-a[class='button']:hover { background: transparent; text-decoration: none; }
-
 /* Header */
-#header { background: url(/images/theme/header_shadow.gif) repeat-x left bottom; }
 
-#header a:link,
-#header a:visited { color: #000; text-decoration: none; }
-#header a:hover,
-#header a:active { color: #930; background: transparent; text-decoration: none;}
-
-#header h1 {
-    font: bold 400% georgia, serif;
-    letter-spacing: -1px; 
-    margin: 0;
-    float: left; 
+/* Access */
+#access {
+    display: block;
+    float: left;
+    margin: 0 auto 0 auto;
+    width: 100%;
+    background: #ccc;
 }
 
-#header h2 {
-    font: normal 12px verdana, arial, sans-serif;  
-    margin: 2.5em 0 0 0.8em;
-    float: left; 
+#access ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+#access li {
+    float: left;
+    position: relative;
+}
+
+#access a {
+    display: block;
+    line-height: 2em;
+    padding: 0 1em;
+    text-decoration: none;
+    color: black;
+}
+
+#access li:hover > a,
+
+#access ul ul :hover > a {
+  background: #333;
+  color: #fff;
+}
+
+#access ul ul a:hover {
+  background: #000;
+}
+
+#access ul li:hover > ul {
+  display: block;
+}
+
+/* Menu */
+.menu {
+    display: block;
+    margin: 0 auto;
+    width: 80%;
+    max-width: 700px;
 }
 
 /* Content */
@@ -40,12 +69,25 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 #content h4 { font-size: 18px; margin: 1.2em 0 0.3em; border-bottom: 1px dotted #bbb; }
 #content h5 { font-size: 18px; background: #ffd; margin: 1.2em 0 0.3em; border-bottom: 1px dotted #aaa; }
 
-#content .entry { clear:left; }
-#content .entry img { display: block;   margin-left: auto;   margin-right: auto; }
-#content .index { margin: 0 0 1.2em; }
+#content .entry {
+    clear:left; 
+    border-bottom: 1px dotted #aaa;
+}
+    
+#content .entry img { display: block; margin-left: auto; margin-right: auto; }
 
-#content .entry_summary img { float:left; margin: 0 15px 0 0; padding: 5px; border: 2px #eee solid; }
-#content .entry_summary p { text-align: justify; }
+#content .entry_summary { min-height: 180px; }
+#content .entry_summary img { 
+    position: relative; bottom: 20px;
+    float:right; 
+    margin: 0 0 0 15px; 
+    padding: 0px; 
+    -webkit-box-shadow: 0 0 7px rgba(0,0,0, .5);
+    -moz-box-shadow:    0 0 7px rgba(0,0,0, .5);
+    -box-shadow:        0 0 7px rgba(0,0,0, .5);
+}
+
+#content .entry_summary p { text-align: left; }
 
 #content ul,
 #content ol { margin: 1em; padding:0; }
@@ -66,24 +108,14 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 }
 
 #content code { 
-    font: Consolas, "bitstream vera sans mono", monaco, "lucida console", "courier new", courier, serif;
+    font-family: Consolas, "bitstream vera sans mono", monaco, "lucida console", "courier new", courier, serif;
 }
 
 #content pre {
-    color: #003366;
-    background: #ffffe0;
     overflow: auto;
-    font: Consolas, "bitstream vera sans mono", monaco, "lucida console", "courier new", courier, serif;
-    margin: 0.9em 0;
-    padding: 8px;
+    font-size: 85%;
+    font-family: Consolas, "bitstream vera sans mono", monaco, "lucida console", "courier new", courier, serif;
 }
-
-
-#content .info { color: #555; background: #ffffe0; 
-                 border: solid 2px #ccc; margin: 1em 3em; padding: 0.5em 0.5em; }
-
-#content table { background: #ffffe0; margin: 0.9em 0; padding: 8px; }
-#content thead { background: #eee; }
 
 #content h2 a,
 #content h3 a,
@@ -100,7 +132,7 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 #content h4 a:hover,
 #content h5 a:hover { background: #fff; text-decoration: underline; } 
 
-#content .entry { margin: 0 0 3em 0; }
+#content .entry { margin: 0 0 10px 0; }
 
 #content .entry .title {
     font-size: 24px;
@@ -111,17 +143,15 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
 
 #content .entry .title a:link,
 #content .entry .title a:visited { 
-    color: #930;
+    color: #00243E;
     text-decoration: none;
 }
 
 #content .entry .title a:hover,
 #content .entry .title a:active { 
-    color: #000;
+    color: #00243E;
     background: transparent;
 }
-
-#content .entry .title .comment_count { display: none; }
 
 #content .entry .meta {
     color: #bbb;
@@ -130,72 +160,13 @@ a[class='button']:hover { background: transparent; text-decoration: none; }
     margin: 0 0 1em;
 }
 
-#content .entry .meta a,
-#content .entry .meta a:hover { /* author mailto: link (if any) */
-    color: #aaa; background: transparent;
-    text-decoration: none;
-}
-
-#content .entry .author abbr { /* posted date */
-    font-weight: bold;
-    color: #aaa;
-}
-
-#content .entry .content {}
-
-#content .typocode     { margin: 5px; padding: 2px; background: #eee; }
-#content .codetitle    { padding: 2px; font-weight: bold; font-size: 120%; }
-#content .typocode pre { margin: 0; padding: 5px; overflow: auto; }
-
-#content .toc {
-    float: right;
-    font-size: 10px;
-    background: #eee;
-    margin: 5px; padding: 2px;
-    border: 1px solid #ddd;
-}
-
-#content .toc h2 { font-size: 14px; }
-#content .toc ul { margin: 2px; padding:0; list-style-type: none; }
-
 #content .codenotice {
-    /* background: orange; */
-    font-size: 18px;
-    border: 4px darkorange solid;
-    background: khaki;
+    font-size: 85%;
+    background: #eee;
     padding: 0.7em;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
 }
-
-/*--------------------------------------------------------------
- Sidebar
- --------------------------------------------------------------*/
-#sidebar { font-size: 12px; }
-
-#sidebar h3 { 
-    font: bold 14px "lucidamac bold", "lucida grande", verdana, arial, helvetica, sans-serif;
-    margin: 0 0 0.5em;
-}
-
-#sidebar h3 a:link,
-#sidebar h3 a:visited { color: #000; text-decoration: none; }
-
-#sidebar h3 a:hover,
-#sidebar h3 a:active {
-    background: transparent; text-decoration: underline;
-}
-
-#sidebar ul {
-    list-style-type: none; 
-    padding: 0;
-    /* margin: 0 0 2em; padding: 0; */
-}
-
-#sidebar li { 
-    margin: 0;
-    padding: 1px 0;
-}
-
-#sidebar em { font-style: normal; }
 
 /*--------------------------------------------------------------
  Footer
