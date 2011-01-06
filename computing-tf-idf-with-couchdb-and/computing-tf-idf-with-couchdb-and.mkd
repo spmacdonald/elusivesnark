@@ -1,0 +1,257 @@
+Featured
+False
+Computing TF-IDF with CouchDB and Python
+2009-08-18
+Term Frequency Inverse Document Frequency (TF-IDF) is weighting scheme that is commonly used in information retrieval tasks. The idea is to treat each document as a bag of words, ignoring the exact ordering of the words in the document while retaining information about the occurrences of each word.
+
+Term Frequency Inverse Document Frequency (TF-IDF) is weighting scheme that is commonly used in information retrieval tasks. The idea is to treat each document as a bag of words, ignoring the exact ordering of the words in the document while retaining information about the occurrences of each word. 
+
+TF-IDF is a composite weight: one first computes the normalized Term Frequency, which is really just the number of times a word appears in a document, divided by the total number of words in that document. Then, the Inverse Document Frequency is computed as the logarithm of the number of documents in the corpus divided by the number of documents where the term t_i appears. Or, in symbols: 
+
+![Formula1](/images/computing-tf-idf-with-couchdb-and/formula1.png)
+
+and
+
+![Formula2](/images/computing-tf-idf-with-couchdb-and/formula2.png)
+
+For my project, computing the TF-IDF weights for each document in the corpus is a necessary step on the road to building an algorithmic document classifier, but more on that in a later post. 
+
+In this post I will provide code snippets that:
+1. Tokenize the corpus,
+2. Create CouchDB views that compute the Document Frequency quantity, incrementally,
+3. Compute the TF-IDF weight for each document in the corpus.
+
+### Tokenizing the Corpus
+
+In order to be able to compute the TF-IDF weights as described above, it is necessary to first tokenize the text. To do this, I chose to use the [NLTK](http://www.nltk.org/) library which is a collection of natural language processing algorithms written in Python. Tokenizing the documents in the corpus is a two step process: first the text is split into sentences, and then the sentences are split into the individual words. To tokenize the sentences I use the Punkt sentence tokenizer, while to tokenize the words I use the Treebank word tokenizer. Interested readers can find more information about these algorithms in the NLTK [documentation](http://nltk.googlecode.com/svn/trunk/doc/api/index.html). The code shown below will tokenize each document in the corpus and compute the normalized term frequencies. 
+
+    import os
+    import nltk
+    import couchdb
+
+    def tokenize_document(document):
+        tokens = []
+        sentences = nltk.sent_tokenize(document)
+        for sentence in sentences:
+            words = nltk.word_tokenize(sentence)
+            for word in words:
+                tokens.append(word)
+        return tokens
+
+        
+    def clean_tokens(tokens):
+        clean_tokens = []
+        for token in tokens:
+            if len(token) < 2: # Only save words longer than 2 chars
+                continue
+            clean_tokens.append(token.lower()) # Always lower case
+        return clean_tokens
+
+            
+    def process_document(document):
+        return clean_tokens(tokenize_document(document))
+
+        
+    def get_term_freq(tokens):
+        tf = {}
+        for token in tokens:
+            if token not in tf:
+                tf[token] = float(tokens.count(token))/float(len(tokens))
+        return tf
+
+        
+    def main():
+        server = couchdb.Server('http://127.0.0.1:5984')
+        db = server['rcv1_test_100']
+
+        # Tokenize and compute term frequencies for all the documents in the db.    
+        for result in db.query('''function(doc) { if (!('tf' in doc)) emit(doc._id, null); }'''):
+            doc = db[result.key]
+            tokens = process_document(doc['text'])
+            doc['tokens'] = tokens
+            doc['tf'] = get_term_freq(tokens)
+            db[result.key] = doc
+
+    if __name__ == '__main__':
+        main()
+
+Now that each of the documents in the corpus has been tokenized, the next step is to compute the document frequency quantity, namely, we want to know for each term, how many documents that term appears in. This problem fits neatly into the view model espoused by CouchDB.
+
+### Computing Document Frequency
+
+Because each of the terms in the tf field are by construction, unique, we can use map-reduce to count the number of documents each term appears in across the entire corpus. Note that to compute the Inverse Document Frequency, I also need to know the total number of documents in the corpus. I present both views below. 
+
+    /* document frequency: 'docfreq' */
+    map:function(doc) {
+        if ("tf" in doc) {
+            for (term in doc.tf) {
+                emit(term, 1);
+            }
+        }
+    }
+
+    reduce:function(keys, values) {
+        return sum(values);
+    }
+
+    /* all tokenized documents: 'all_docs_count' */
+    map:function(doc) {
+        if ("tf" in doc) {
+            emit(null, 1);
+        }
+    }
+
+    reduce:function(keys, values) {
+        return sum(values);
+    }
+
+### Computing TF-IDF
+
+Putting everything together, the following code will compute the TF-IDF weights for each document. 
+
+    from math import log
+    import couchdb
+
+    def main():
+        server = couchdb.Server('http://127.0.0.1:5984')
+        db = server['rcv1_test_100']
+
+        # The number of documents in the database (exclude design docs).
+        for result in db.view('_design/test/_view/all_docs_count'):
+            num_docs = result.value
+
+        # Document frequency.  Number of documents a term appears in.
+        df = {}
+        for result in db.view('_design/test/_view/docfreq', group=True):
+            df[result.key] = log(float(num_docs)/float(result.value))    
+
+        # Compute tf-idf for each document.
+        for result in db.query('''function(doc) { if (!('tf_idf' in doc)) emit(doc._id, null); }'''):
+            doc = db[result.key]
+            tf = doc['tf']
+            tf_idf = {}
+            for k, v in tf.items(): # By construction, there should never be KeyError's here
+                tf_idf[k] = v * df[k]
+            doc['tf_idf'] = tf_idf
+            db[result.key] = doc    
+
+    if __name__ == '__main__':
+        main()
+
+Finally, here is a what a tokenized, weighted JSON document looks like:
+
+    {
+       "_id": "99642-1996-10-07",
+       "_rev": "3-4daa8aea56f3be7af795c5568982859b",
+       "itemid": "99642",
+       "codes": {
+           "topics": [
+               "M14",
+               "M141",
+               "MCAT"
+           ],
+           "countries": [
+               "ARG"
+           ]
+       },
+       "title": "ARGENTINA: Argentine cash maize drifts lower, weather good.",
+       "text": "Argentine cash maize drifted lower in lazy trade Monday, with
+       continuing good waether leaving the market relaxed about crop prospects and
+       some exporters selling, traders said. January wheat also slipped in slow
+       trade. Cash soybean prices were stable in low volume. The market was a bit
+       lost due to a holiday in the main soybean center, Rosario. But traders said
+       underlying demand was good. Cash sunflower seed fell in thin turnover. Oil
+       prices are weak and crushers have built up stocks of seed. -- Jason Webb,
+       Buenos Aires Newsroom +541 318-0655",
+       "tokens": [ 
+       "argentine", "cash", "maize", "drifted", "lower", "in", "lazy",
+       "trade", "monday", "with", "continuing", "good", "waether", "leaving",
+       "the", "market", "relaxed", "about", "crop", "prospects", "and", "some",
+       "exporters", "selling", "traders", "said", "january", "wheat", "also",
+       "slipped", "in", "slow", "trade", "cash", "soybean", "prices", "were",
+       "stable", "in", "low", "volume", "the", "market", "was", "bit", "lost",
+       "due", "to", "holiday", "in", "the", "main", "soybean", "center",
+       "rosario", "but", "traders", "said", "underlying", "demand", "was", "good",
+       "cash", "sunflower", "seed", "fell", "in", "thin", "turnover", "oil",
+       "prices", "are", "weak", "and", "crushers", "have", "built", "up",
+       "stocks", "of", "seed", "--", "jason", "webb", "buenos", "aires",
+       "newsroom", "541", "318-0655"
+       ],
+       "date": "1996-10-07",
+       "tf": {
+           "and": 0.02247191011235955, "webb": 0.011235955056179775, "jason":
+           0.011235955056179775, "have": 0.011235955056179775, "slipped":
+           0.011235955056179775, "some": 0.011235955056179775, "crop":
+           0.011235955056179775, "trade": 0.02247191011235955, "seed":
+           0.02247191011235955, "are": 0.011235955056179775, "soybean":
+           0.02247191011235955, "in": 0.056179775280898875, "drifted":
+           0.011235955056179775, "leaving": 0.011235955056179775, "market":
+           0.02247191011235955, "maize": 0.011235955056179775, "said":
+           0.02247191011235955, "built": 0.011235955056179775, "sunflower":
+           0.011235955056179775, "also": 0.011235955056179775, "newsroom":
+           0.011235955056179775, "due": 0.011235955056179775, "cash":
+           0.033707865168539325, "traders": 0.02247191011235955, "to":
+           0.011235955056179775, "exporters": 0.011235955056179775, "541":
+           0.011235955056179775, "low": 0.011235955056179775, "buenos":
+           0.011235955056179775, "stable": 0.011235955056179775, "holiday":
+           0.011235955056179775, "was": 0.02247191011235955, "argentine":
+           0.011235955056179775, "lazy": 0.011235955056179775, "selling":
+           0.011235955056179775, "wheat": 0.011235955056179775, "monday":
+           0.011235955056179775, "continuing": 0.011235955056179775, "relaxed":
+           0.011235955056179775, "waether": 0.011235955056179775, "weak":
+           0.011235955056179775, "lower": 0.011235955056179775, "oil":
+           0.011235955056179775, "volume": 0.011235955056179775, "were":
+           0.011235955056179775, "slow": 0.011235955056179775, "rosario":
+           0.011235955056179775, "but": 0.011235955056179775, "demand":
+           0.011235955056179775, "prices": 0.02247191011235955, "318-0655":
+           0.011235955056179775, "bit": 0.011235955056179775, "stocks":
+           0.011235955056179775, "with": 0.011235955056179775, "prospects":
+           0.011235955056179775, "main": 0.011235955056179775, "center":
+           0.011235955056179775, "lost": 0.011235955056179775, "--":
+           0.011235955056179775, "of": 0.011235955056179775, "up":
+           0.011235955056179775, "crushers": 0.011235955056179775, "good":
+           0.02247191011235955, "underlying": 0.011235955056179775, "thin":
+           0.011235955056179775, "january": 0.011235955056179775, "about":
+           0.011235955056179775, "the": 0.033707865168539325, "turnover":
+           0.011235955056179775, "fell": 0.011235955056179775, "aires":
+           0.011235955056179775
+       },
+       "tf_idf": {
+           "and": 0.004735304074509046, "webb": 0.043955314667731976, "january":
+           0.02837897353155343, "jason": 0.05174348523582126, "have":
+           0.01315935934272972, "slipped": 0.03939952693617957, "up":
+           0.01179575420785031, "some": 0.016513213146729683, "crop":
+           0.03939952693617957, "trade": 0.038534796136897226, "seed":
+           0.08791062933546395, "are": 0.009747197389940709, "soybean":
+           0.10348697047164251, "in": 0.010467953830982783, "drifted":
+           0.05174348523582126, "aires": 0.03939952693617957, "crushers":
+           0.05174348523582126, "market": 0.033026426293459366, "maize":
+           0.03939952693617957, "said": 0.006167120128129446, "built":
+           0.043955314667731976, "sunflower": 0.043955314667731976, "to":
+           0.0019590268218514354, "newsroom": 0.014302985121493118, "due":
+           0.02382318580000102, "stocks": 0.027055568636537883, "traders":
+           0.04584765906801246, "also": 0.016513213146729683, "541":
+           0.043955314667731976, "low": 0.02837897353155343, "buenos":
+           0.03939952693617957, "stable": 0.043955314667731976, "holiday":
+           0.03939952693617957, "was": 0.015576341136178545, "argentine":
+           0.03939952693617957, "thin": 0.043955314667731976, "lazy":
+           0.043955314667731976, "selling": 0.033659913185999896, "wheat":
+           0.0361671440996427, "monday": 0.017012671153143543, "weak":
+           0.0361671440996427, "relaxed": 0.05174348523582126, "waether":
+           0.05174348523582126, "continuing": 0.0361671440996427, "prospects":
+           0.03939952693617957, "oil": 0.02987932625767166, "volume":
+           0.02837897353155343, "slow": 0.043955314667731976, "but":
+           0.011171373857796258, "demand": 0.02480084172123282, "prices":
+           0.042631909772716435, "318-0655": 0.043955314667731976, "bit":
+           0.043955314667731976, "exporters": 0.03939952693617957, "with":
+           0.006717269671411465, "lower": 0.027055568636537883, "main":
+           0.02837897353155343, "center": 0.05174348523582126, "lost":
+           0.031611356368090295, "--": 0.010017956396447005, "of":
+           0.0011838260186272623, "cash": 0.07761522785373189, "leaving":
+           0.05174348523582126, "good": 0.06322271273618059, "underlying":
+           0.043955314667731976, "rosario": 0.05174348523582126, "were":
+           0.01179575420785031, "about": 0.015576341136178545, "the":
+           0.0043089900508949995, "fell": 0.02987932625767166, "turnover":
+           0.03939952693617957
+       }
+    }
