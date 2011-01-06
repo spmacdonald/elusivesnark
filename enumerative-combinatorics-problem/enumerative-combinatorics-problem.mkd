@@ -1,4 +1,5 @@
 Featured
+True
 An Enumerative Combinatorics Problem
 2008-11-02
 During the summer of 2003, in my second year of university I was fortunate to do a summer NSERC research program. This post is about the problem that I worked on during those four months.
