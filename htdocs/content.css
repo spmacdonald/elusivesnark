@@ -1,4 +1,62 @@
 /* Header */
+#header img {
+    display: block;
+    margin: 0px auto;
+    max-width: 700px;
+}
+
+/* Social Share */
+#socialshare {
+    position: fixed; 
+    right: 50%; 
+    top: 170px; 
+    width: 50px; 
+    margin-right: -425px; 
+    opacity: 1;
+}
+
+#socialshare a {
+    position: relative; 
+    display: block; 
+    height: 50px; 
+    margin-bottom: 4px; 
+    background-color: #eee; 
+    border: 1px solid #ccc; 
+    -moz-border-radius: 7px; 
+    -webkit-border-radius: 7px; 
+    -moz-box-shadow: 0 0 1px #d7d7d7; 
+    -webkit-box-shadow: 0 0 1px #d7d7d7;
+}
+
+#socialshare a:active {
+    background-color: #211922 !important; 
+    border-color: #211922 !important; 
+    -moz-box-shadow: 0; 
+    -webkit-box-shadow: 0;
+}
+
+#socialshare span {
+    position: absolute; 
+    right: 14px; 
+    bottom: 10px; 
+    background-image: url(/images/theme/social_icons.png);
+}
+
+#socialshare #facebook-share-button span {right: 12px; width: 14px; height: 26px; background-position: 0 -26px;}
+#socialshare #facebook-share-button:hover {background-color: #3b5998; border-color: #3b5998;}
+#socialshare #facebook-share-button:hover span,
+#socialshare #facebook-share-button:active span {background-position: 0 0;}
+
+#socialshare #twitter-share-button span {width: 12px; height: 20px; background-position: -15px -32px;}
+#socialshare #twitter-share-button:hover {background-color: #5ecbfb; border-color: #5ecbfb;}
+#socialshare #twitter-share-button:hover span,
+#socialshare #twitter-share-button:active span {background-position: -15px -6px;}
+
+#socialshare #email-share-button span {right: 8px; width: 22px; height: 21px; background-position: -31px -31px;}
+#socialshare #email-share-button:hover {background-color: #1389e5; border-color: #1389e5;}
+#socialshare #email-share-button:hover span,
+#socialshare #email-share-button:active span {background-position: -31px -57px;}
+
 
 /* Access */
 #access {
@@ -166,48 +224,4 @@
     padding: 0.7em;
     -moz-border-radius: 10px;
     border-radius: 10px;
-}
-
-/*--------------------------------------------------------------
- Footer
- --------------------------------------------------------------*/
-
-#footer {
-    border-top: 1px solid #ccc; 
-    font-size: 90%; 
-}
-
-#footer a {  text-decoration: none; }
-#footer a:link,
-#footer a:visited { 
-    color: #000;
-}
-
-#footer a:hover,
-#footer a:active { 
-    color: #fff;
-    background: #000;
-}
-
-#footer hr {
-    display: none;
-}
-
-#footer p {
-    width: 40%;
-    float: left; 
-    margin: 0; padding: 0; 
-}
-
-#footer ul {
-    width: 40%;
-    margin: 0; padding: 0;
-    list-style-type: none; 
-    text-align: right; 
-    float: right; 
-}
-
-#footer li {
-    margin: 0; padding: 0 0 0 1em;
-    display: inline; 
 }

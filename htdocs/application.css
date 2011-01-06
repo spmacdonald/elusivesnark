@@ -12,11 +12,6 @@
                #content pre { color: #000; background: #eee; }
                #content .comments { display:none; } }
 
-/* body { */
-    /* background: url(/images/theme/background.gif) repeat-x left top; */
-    /* font: normal 13px "lucida grande", verdana, arial, helvetica, sans-serif; */
-/* } */
-
 input,
 textarea { font: normal 12px "bitstream vera sans", verdana, sans-serif; }
 
