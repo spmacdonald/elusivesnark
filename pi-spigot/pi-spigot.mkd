@@ -1,4 +1,5 @@
 Featured
+True
 The Pi Spigot
 2009-08-28
 This post is about an image I created to visualize the digits of pi. The idea is to create a square grid, like a chess board, but inside each of the squares is a circle, the radius of which is determined by the digits of pi.
@@ -23,12 +24,13 @@ Using this construction, and some tricky color gradients I produced the followin
 
 ### 50 x 50 Grid
 ![Grid50](/images/pi-spigot/grid-50-small.png)
+[Full Size](/images/pi-spigot/grid-50.png)
 
 ### 100 x 100 Grid
 ![Grid100](/images/pi-spigot/grid-100-small.png)
+[Full Size](/images/pi-spigot/grid-100.png)
 
 ### Source code
-Note that in the source code below, the images produced use a purple gradient.  I adjusted the colors in the above images so that it would fit in with the global color scheme.  The original images are here: [grid50](/images/pi-spigot/grid-50.png) and [grid100](/images/pi-spigot/grid-100.png).
 
     colors = ximport("colors")
 

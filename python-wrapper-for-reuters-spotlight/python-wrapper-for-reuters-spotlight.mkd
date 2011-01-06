@@ -1,4 +1,5 @@
 Regular
+False
 A Python Wrapper for Reuters' Spotlight API
 2009-08-06
 The Reuters Spotlight service provides access to Reuters content through a RESTful API: clients submit a HTTP query to the service and the content is returned as an easily consumable object. The first task that someone might perform when building an application to leverage the Reuters framework is to create their own local copy of the Reuters' database. There are many ways one could approach this task. I will describe one approach below.

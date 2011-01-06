@@ -1,4 +1,5 @@
 Regular
+True
 Squares
 2009-10-25
 An experiment with Nodebox and Core Image.
