@@ -2,17 +2,36 @@ Featured
 True
 Innovative Air Quality Prototype
 2009-05-08
-This post is about the prototype I build for IAQ.
+The first startup I ever joined was called Innovative Air Quality.  Our goal was to create a low cost, remote sensor monitoring product capable of accepting input from a large variety of environmental sensors, warehouse the data, and allow users to interact with the system in near realtime through a web service.
 
-![Picture1](/images/innovative-air-quality/picture1.jpg)
-![Picture2](/images/innovative-air-quality/picture2.jpg)
-![Picture3](/images/innovative-air-quality/picture3.jpg)
-![Picture4](/images/innovative-air-quality/picture4.jpg)
-![Picture5](/images/innovative-air-quality/picture5.jpg)
-![Picture6](/images/innovative-air-quality/picture6.jpg)
-![Picture7](/images/innovative-air-quality/picture7.jpg)
-![Picture8](/images/innovative-air-quality/picture8.jpg)
-![Picture9](/images/innovative-air-quality/picture9.jpg)
-![Picture10](/images/innovative-air-quality/picture10.jpg)
-![Picture11](/images/innovative-air-quality/picture11.jpg)
-![Picture12](/images/innovative-air-quality/picture12.jpg)
+The first startup I ever joined was called Innovative Air Quality.  Our goal was to create a low cost, remote sensor monitoring platform capable of accepting input from a large variety of environmental sensors, warehouse the data, and allow users to interact with the system in near realtime through a web service.
+
+I was the first technical person to join the project and it was my responsibility to formalize the specifications as given by the founder and build the prototype.  Since we were positioning the product to compete on price, it was essential that the system was constructed from off-the-shelf components for which we could secure volume discounts.
+
+The system I came up with, pictured in the photos below, consists of three primary components: an analog to digital converter (ADC), a power supply and a supervisory computer.  In the end, the system was capable of all the core functionalities of our competitors, except for a self contained UPS system, for about 50 times less the price of our competitors.
+
+Below are a few images showing the prototype I built and the production version which we had built for us.
+
+![Picture1](/images/innovative-air-quality/picture1.jpg) A photo of the weather proof casing.  The prototype had to be able to pass CSA inspection.
+
+![Picture2](/images/innovative-air-quality/picture2.jpg) The innards of the product. Top: analog to digital converter, bottom left: supervisory computer, bottom right: 24 VDC power supply.
+
+![Picture3](/images/innovative-air-quality/picture3.jpg) Close up of the ADC inputs.
+
+![Picture4](/images/innovative-air-quality/picture4.jpg) Close up of the power supply connects.
+
+![Picture5](/images/innovative-air-quality/picture5.jpg) Sensor wiring.
+
+![Picture6](/images/innovative-air-quality/picture6.jpg) Partially wired Amphenol connectors.
+
+![Picture7](/images/innovative-air-quality/picture7.jpg) Close up of the partially wired Amphenol connectors.
+
+![Picture8](/images/innovative-air-quality/picture8.jpg) Power supply, grounding and enternet.
+
+![Picture9](/images/innovative-air-quality/picture9.jpg) Amphenol strain connectors.  These things are awesome, but I was chastized for buying them since the connectors were something like 5% of the total cost of the system.  For the production version we chose something more economical.
+
+![Picture10](/images/innovative-air-quality/picture10.jpg) The production version built from my prototype.  This was built by a contracted engineering firm.
+
+![Picture11](/images/innovative-air-quality/picture11.jpg) The ADAM rack accepts 8 x 8 = 64 sensor inputs.
+
+![Picture12](/images/innovative-air-quality/picture12.jpg) The power distribution bus had to be scaled up for the full model.
