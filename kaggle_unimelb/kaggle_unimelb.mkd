@@ -1,0 +1,13 @@
+Featured
+False
+Kaggle Competition: Predict Grant Applications
+2011-02-19
+This is my first attempt at a Kaggle competition problem.  The goal is to predict the outcome of university grant applications given a set of predictor variables.  My approach is to train a Support Vector Machine model and subsequently make predictions with the trained model.
+
+^^^ This entry has a [github](https://github.com/spmacdonald/kaggle_unimelb) page ^^^
+
+This is my first attempt at a [Kaggle](http://www.kaggle.com/unimelb) competition problem.  The goal is to predict the outcome of university grant applications given a set of predictor variables.  My approach is to train a Support Vector Machine model and subsequently make predictions with the trained model.
+
+The bulk of the code deals with transforming the data, handling missing values and scaling the data.  I use the [scikits-learn](http://scikit-learn.sourceforge.net/) package to train the SVM model and make predictions.  The performance of the model is not spectacular, but for two days work I am satisfied with it.  Avenues to pursue for improvement would be: handle missing data in a more intelligent way than imputation, build reduced models for the different features, and in general, experiment in a statistically rigorous way with feature selection.
+
+The code is fairly well commented I think.  Checkout the github entry if you want to learn more.
