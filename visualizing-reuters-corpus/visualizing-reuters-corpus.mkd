@@ -1,4 +1,4 @@
-Regular
+Featured
 True
 Visualizing The Reuters Corpus
 2008-12-09
