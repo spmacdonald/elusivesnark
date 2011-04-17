@@ -1,0 +1,22 @@
+Featured
+True
+Divisors Spirals and Colors
+2011-04-17
+I set out to create a visualization loosely based on the divisor function, which is a mathematical function that counts the number of divisors of an integer.  The goal is to present the primeness of numbers in an aesthetically pleasing manner.  My inspiration for this project comes from the Ulam and Sack spirals which I discuss in the construction section. 
+
+I set out to create a visualization loosely based on the [divisor](http://en.wikipedia.org/wiki/Divisor_function) function, which is a mathematical function that counts the number of divisors of an integer.  The goal is to present the primeness of numbers in an aesthetically pleasing manner.  My inspiration for this project comes from the [Ulam and Sack](http://en.wikipedia.org/wiki/Ulam_spiral) spirals which I discuss in the construction section.  This is what I came up with:
+![artwork](/images/divisors-spirals-and-colors/artwork.png)
+
+The Nodebox script that creates this image can be found here: [github](https://github.com/spmacdonald/ulam_spiral/blob/master/archimedean_spiral.py).
+
+### Construction
+At the outset of this project, I did not have a clear target for what I wanted the final piece to look like.  Initially I had intended to create an image based on the Ulam spiral, but using the divisor function to generate an interesting coloring pattern by representing the primeness of a number as a shade of gray.  In case you are not familiar with the Ulam Spiral, it is constructed by writing down a regular grid of numbers, starting with 1 at the center and then spiraling out.  By marking where the prime numbers occur in the grid, an interesting pattern emerges:
+![small_spiral](/images/divisors-spirals-and-colors/small_spiral.png)
+
+A variation of the Ulam spiral is to place a circle who's radius represents the number of divisors each integer has in a rectangular grid.  This creates the following image:
+![divisor_spiral](/images/divisors-spirals-and-colors/divisor_spiral.png)
+
+These images, while interesting, are not exactly novel and really did not fit with what I was trying to create.  I decided to change the layout from rectangular to circular, creating what is known as the Sack spiral and again place circles who's radius is given by the divisor function as above:
+![archimedean_spiral](/images/divisors-spirals-and-colors/archimedean_spiral.png)
+
+With this new construction I then added lines extending radially outward, the thickness of which matched the diameter of the circles.  The lines are colored randomly, however the alpha value (transparency) is given as a function of r: the closer to the center of the image, the more transparent the color is.  These rules lead to the creation of the final piece.
